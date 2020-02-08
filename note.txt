@@ -1,0 +1,88 @@
+#
+Title
+#
+
+How to read a company's mind through its job postings
+- An application on AWS and Azure
+
+#
+Technical details
+#
+
+https://www.amazon.jobs/en
+AWS and Amazon Wed Services give different numbers of results
+Need to run two spiders and combine the results
+
+Virtual location means there is no link to a map
+
+https://careers.microsoft.com/us/en
+For jobs that have multiple locations, yield one item for each location
+
+# 
+Articles
+#
+
+https://www.zdnet.com/article/microsofts-q2-surges-commercial-cloud-hits-50-billion-annual-run-rate-azure-revenue-up-62/
+
+Azure revenue growth was 62%, but Microsoft didn't break out a revenue figure so the mystery comparing Azure to AWS remains.
+
+https://techcrunch.com/2019/07/18/azure-revenue-continues-to-slow-down-for-microsoft/
+
+The cloud market is still growing at a rapid rate as companies are still in the relatively early stages of moving their workloads to public cloud vendors like Microsoft, Amazon and Google. There is a tremendous opportunity ahead for Microsoft and all of its rivals, and while Microsoft’s Azure  earnings growth may be slowing down, there is still plenty of room for significant revenue for the foreseeable future.
+
+https://techcrunch.com/2020/01/31/even-as-microsoft-azure-revenue-grows-awss-marketshare-lead-stays-strong/
+
+hen analyzing the cloud market, there are many ways to look at the numbers; revenue, year-over-year or quarter-over-quarter growth — or lack of it — or market share. Each of these numbers tells a story, but in the cloud market, where aggregate growth remains high and Azure’s healthy expansions continues, it’s still struggling to gain meaningful ground on AWS’s lead.
+
+https://www.parkmycloud.com/blog/aws-vs-azure-vs-google-cloud-market-share/
+
+Like Microsoft, Google avoided reporting specific revenue numbers for its cloud business yet again
+
+2018 vs. 2019 Market Share
+
+This year they report an overall growth in the cloud infrastructure market of 42%. By provider, AWS had the biggest sales gain with a $2.3 billion YOY increase, but Canalys reports Azure and Google Cloud with bigger percentage increases.
+
+In November, a Goldman Sachs report stated that AWS, Azure, Google Cloud, and Alibaba Cloud made up 56% of the total cloud market, with that projected to grow to 84% this year. The report shows AWS far, far in the lead with 47% of the market projected for this year, with Azure and Google trailing at 22% and 8% market share, respectively.
+ 
+https://www.businessinsider.com/goldman-sachs-cloud-computing-market-forecast-aws-microsoft-azure-google-cloud-2018-11
+
+# Has to subscribe, not accessble
+
+https://kinsta.com/blog/cloud-market-share/
+
+The cloud computing market is huge. New data from the Synergy Research Group, across seven key cloud service and infrastructure market segments, operators, and vendors – reports revenues in excess of $150 billion for the first half of 2019. A 24% growth on the previous year.
+
+Based on projections from the IDC, worldwide spending on public cloud services and infrastructure is forecast to double over the next five years. Growing from a $229 billion run rate in 2019 to almost $500 billion by 2023. Driven by a five-year compound annual growth rate (CAGR).
+
+# scrapy
+
+scrapy shell -s USER_AGENT="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36" 'https://www.amazon.jobs/en/search?base_query=aws&loc_query='
+
+https://www.amazon.jobs/en/search?base_query=aws&loc_query=
+Can only reach this tag:
+response.xpath('/html/body/div[2]/div[1]/div[3]/div')
+
+scrapy shell -s USER_AGENT="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36" 'https://careers.microsoft.com/us/en/search-results?keywords=azure'
+
+https://careers.microsoft.com/us/en/search-results?keywords=azure
+Can only reach this tag:
+response.xpath('/html/body/div[2]/div/div/div[2]/div[2]/section/div')
+
+https://www.amazon.jobs/en/search?base_query=aws&loc_query=
+https://www.amazon.jobs/en/search?offset=10&result_limit=10&sort=relevant&distanceType=Mi&radius=24km&latitude=&longitude=&loc_group_id=&loc_query=&base_query=aws&city=&country=&region=&county=&query_options=&
+
+class BestBuySpider(Spider):
+    name = 'bestbuy_spider'
+    allowed_domains = ['www.bestbuy.com']
+    start_urls = ['https://www.bestbuy.com/site/all-laptops/pc-laptops/pcmcat247400050000.c?id=pcmcat247400050000']
+    def parse(self, response):
+        pass
+
+# Find the total number of pages in the result so that we can decide how many urls to scrape next
+    text = response.xpath('//div[@class="left-side"]/span/text()').extract_first()
+    _, per_page, total = map(lambda x: int(x), re.findall('\d+', text))
+    number_pages = total // per_page
+    # List comprehension to construct all the urls
+    result_urls = ['https://www.bestbuy.com/site/all-laptops/pc-laptops/pcmcat247400050000.c?cp={}&id=pcmcat247400050000'.format(x) for x in range(1,number_pages+1)]
+
+/html/body/div[2]/div[2]/div/div[2]/div[2]/section/div/div/div[2]/div/div[1]/div/span[2]
