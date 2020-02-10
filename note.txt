@@ -54,35 +54,3 @@ The cloud computing market is huge. New data from the Synergy Research Group, ac
 
 Based on projections from the IDC, worldwide spending on public cloud services and infrastructure is forecast to double over the next five years. Growing from a $229 billion run rate in 2019 to almost $500 billion by 2023. Driven by a five-year compound annual growth rate (CAGR).
 
-# scrapy
-
-scrapy shell -s USER_AGENT="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36" 'https://www.amazon.jobs/en/search?base_query=aws&loc_query='
-
-https://www.amazon.jobs/en/search?base_query=aws&loc_query=
-Can only reach this tag:
-response.xpath('/html/body/div[2]/div[1]/div[3]/div')
-
-scrapy shell -s USER_AGENT="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36" 'https://careers.microsoft.com/us/en/search-results?keywords=azure'
-
-https://careers.microsoft.com/us/en/search-results?keywords=azure
-Can only reach this tag:
-response.xpath('/html/body/div[2]/div/div/div[2]/div[2]/section/div')
-
-https://www.amazon.jobs/en/search?base_query=aws&loc_query=
-https://www.amazon.jobs/en/search?offset=10&result_limit=10&sort=relevant&distanceType=Mi&radius=24km&latitude=&longitude=&loc_group_id=&loc_query=&base_query=aws&city=&country=&region=&county=&query_options=&
-
-class BestBuySpider(Spider):
-    name = 'bestbuy_spider'
-    allowed_domains = ['www.bestbuy.com']
-    start_urls = ['https://www.bestbuy.com/site/all-laptops/pc-laptops/pcmcat247400050000.c?id=pcmcat247400050000']
-    def parse(self, response):
-        pass
-
-# Find the total number of pages in the result so that we can decide how many urls to scrape next
-    text = response.xpath('//div[@class="left-side"]/span/text()').extract_first()
-    _, per_page, total = map(lambda x: int(x), re.findall('\d+', text))
-    number_pages = total // per_page
-    # List comprehension to construct all the urls
-    result_urls = ['https://www.bestbuy.com/site/all-laptops/pc-laptops/pcmcat247400050000.c?cp={}&id=pcmcat247400050000'.format(x) for x in range(1,number_pages+1)]
-
-/html/body/div[2]/div[2]/div/div[2]/div[2]/section/div/div/div[2]/div/div[1]/div/span[2]

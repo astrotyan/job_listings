@@ -13,8 +13,8 @@ def init_csv(query):
     filen = '_'.join(query.split('+'))+'.csv'
     with open(filen, 'w') as csvfile:
         header_writer = csv.writer(csvfile)
-        column_names = ['title', 'location', 'job_id', 'date', 'travel', 'profession',
-                        'role', 'employment', 'description', 'responsibilites', 'qualifications']
+        column_names = ['title', 'job_id', 'date', 'travel', 'profession',
+                        'role', 'employment', 'description', 'responsibilites', 'qualifications', 'location']
         header_writer.writerow(column_names)
     return(filen)
 
@@ -30,12 +30,12 @@ driver = webdriver.Chrome()
 
 with open(query+'.csv', 'a') as csvfile:
     jobs_writer = csv.writer(csvfile)
-    for i, url in enumerate(urls[1875:]):
+    for i, url in enumerate(urls):
         print('Scraping {i} out of {n} jobs'.format(i=i+1, n=len(urls)))
         try:
             driver.get(url)
             job = {}
-            # column_names = ['title', 'location', 'job_id', 'date', 'travel', 'profession', 'role', 'employment', 'description', 'responsibilites', 'qualifications']
+            # column_names = ['title', 'job_id', 'date', 'travel', 'profession', 'role', 'employment', 'description', 'responsibilites', 'qualifications', 'location']
             # title
             wait_job = WebDriverWait(driver, 10)
             title = wait_job.until(EC.presence_of_element_located(
